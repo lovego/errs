@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/lovego/xiaomei/utils/errs"
+	"github.com/lovego/errs"
 )
 
 func main() {

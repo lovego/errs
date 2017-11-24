@@ -14,12 +14,12 @@ func Trace(err error) TraceErr {
 	if trace, ok := err.(TraceErr); ok {
 		return trace
 	} else {
-		return TraceErr{err: err.Error(), stack: getStack(1)}
+		return TraceErr{err: err.Error(), stack: Stack(1)}
 	}
 }
 
 func Tracef(format string, args ...interface{}) TraceErr {
-	return TraceErr{err: fmt.Sprintf(format, args...), stack: getStack(1)}
+	return TraceErr{err: fmt.Sprintf(format, args...), stack: Stack(1)}
 }
 
 func (s TraceErr) Stack() string {
@@ -30,7 +30,7 @@ func (s TraceErr) Error() string {
 	return s.err
 }
 
-func getStack(skip int) string {
+func Stack(skip int) string {
 	buf := new(bytes.Buffer)
 
 	callers := make([]uintptr, 32)
