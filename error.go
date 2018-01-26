@@ -9,6 +9,10 @@ func New(code, message string) Error {
 	return Error{code: code, message: message}
 }
 
+func Make(code, message string, data interface{}) Error {
+	return Error{code: code, message: message, data: data}
+}
+
 func (err Error) Code() string {
 	return err.code
 }
