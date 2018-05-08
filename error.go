@@ -3,10 +3,15 @@ package errs
 type Error struct {
 	code, message string
 	data          interface{}
+	logError      bool
 }
 
 func New(code, message string) Error {
 	return Error{code: code, message: message}
+}
+
+func New2(code, message string) Error {
+	return Error{code: code, message: message, logError: true}
 }
 
 func Make(code, message string, data interface{}) Error {
@@ -23,6 +28,10 @@ func (err Error) Message() string {
 
 func (err Error) Data() interface{} {
 	return err.data
+}
+
+func (err *Error) LogError() bool {
+	return err.logError
 }
 
 func (err Error) Error() string {
