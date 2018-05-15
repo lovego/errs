@@ -7,19 +7,20 @@ import (
 )
 
 type TraceErr struct {
-	err, stack string
+	err   error
+	stack string
 }
 
 func Trace(err error) TraceErr {
 	if trace, ok := err.(TraceErr); ok {
 		return trace
 	} else {
-		return TraceErr{err: err.Error(), stack: Stack(3)}
+		return TraceErr{err: err, stack: Stack(3)}
 	}
 }
 
 func Tracef(format string, args ...interface{}) TraceErr {
-	return TraceErr{err: fmt.Sprintf(format, args...), stack: Stack(3)}
+	return TraceErr{err: fmt.Errorf(format, args...), stack: Stack(3)}
 }
 
 func (s TraceErr) Stack() string {
@@ -27,6 +28,10 @@ func (s TraceErr) Stack() string {
 }
 
 func (s TraceErr) Error() string {
+	return s.err.Error()
+}
+
+func (s TraceErr) Err() interface{} {
 	return s.err
 }
 
