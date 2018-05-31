@@ -1,43 +1,76 @@
 package errs
 
+import (
+	"fmt"
+)
+
 type Error struct {
+	err           error // original error
+	stack         string
 	code, message string
 	data          interface{}
-	logError      bool
 }
 
-func New(code, message string) Error {
-	return Error{code: code, message: message}
+func Trace(err error) *Error {
+	if erro, ok := err.(*Error); ok {
+		return erro
+	} else {
+		return &Error{err: err, stack: Stack(3)}
+	}
 }
 
-func New2(code, message string) Error {
-	return Error{code: code, message: message, logError: true}
+func Tracef(format string, args ...interface{}) *Error {
+	return &Error{err: fmt.Errorf(format, args...), stack: Stack(3)}
 }
 
-func Make(code, message string, data interface{}) Error {
-	return Error{code: code, message: message, data: data}
+func New(code, message string) *Error {
+	return &Error{code: code, message: message}
 }
 
-func (err Error) Code() string {
+func (err *Error) Error() string {
+	if err.err != nil {
+		return err.err.Error()
+	} else {
+		return err.code + `: ` + err.message
+	}
+}
+
+func (err *Error) Err() error {
+	return err.err
+}
+
+func (err *Error) Stack() string {
+	return err.stack
+}
+
+func (err *Error) Code() string {
 	return err.code
 }
 
-func (err Error) Message() string {
+func (err *Error) Message() string {
 	return err.message
 }
 
-func (err Error) Data() interface{} {
+func (err *Error) Data() interface{} {
 	return err.data
 }
 
-func (err *Error) LogError() bool {
-	return err.logError
+func (err *Error) SetErr(erro error) *Error {
+	err.err = erro
+	return err
 }
 
-func (err Error) Error() string {
-	return err.code + `: ` + err.message
+func (err *Error) Trace() *Error {
+	err.stack = Stack(3)
+	return err
 }
 
-func (err *Error) SetData(data interface{}) {
+func (err *Error) SetCodeMessage(code, message string) *Error {
+	err.code, err.message = code, message
+	return err
+}
+
+func (err *Error) SetData(data interface{}) *Error {
 	err.data = data
+	return err
 }
