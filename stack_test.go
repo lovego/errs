@@ -9,9 +9,9 @@ import (
 func ExampleStack() {
 	stack := Stack(0)
 	re := regexp.MustCompile(`^runtime\.Callers
-	/.+/src/runtime/extern\.go:\d+ \(0x\d+\)
+	/.+/src/runtime/extern\.go:212 \(0x[a-z0-9]+\)
 github.com/lovego/errs.Stack
-	/.+/src/github\.com/lovego/errs/stack\.go:13 \(0x[a-z0-9]+\)
+	/.+/src/github\.com/lovego/errs/stack\.go:1[34] \(0x[a-z0-9]+\)
 github.com/lovego/errs.ExampleStack
 	/.+/src/github.com/lovego/errs/stack_test\.go:10 \(0x[a-z0-9]+\)
 `)
