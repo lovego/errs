@@ -16,8 +16,11 @@ func New(code, message string) *Error {
 }
 
 func Trace(err error) *Error {
-	if erro, ok := err.(*Error); ok {
-		return erro
+	if e, ok := err.(*Error); ok {
+		if e.Stack() == "" {
+			e.stack = Stack(3)
+		}
+		return e
 	} else {
 		return &Error{err: err, stack: Stack(3)}
 	}

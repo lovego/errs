@@ -57,6 +57,22 @@ func ExampleTrace() {
 	// Message: message
 }
 
+func ExampleTrace_Error() {
+	err := Trace(New("code", "message"))
+	fmt.Println("Error:", err.Error())
+	fmt.Println("Stack:", strings.HasPrefix(err.Stack(), "github.com/lovego/errs.ExampleTrace_Error"))
+	fmt.Println("Data:", err.Data())
+	fmt.Println("GetError:", err.GetError())
+	fmt.Println("Trace Again:", Trace(err) == err)
+
+	// Output:
+	// Error: code: message
+	// Stack: true
+	// Data: <nil>
+	// GetError: <nil>
+	// Trace Again: true
+}
+
 func ExampleTracef() {
 	err := Tracef("connection timeout: %d", 3)
 	fmt.Println("Error:", err.Error())
