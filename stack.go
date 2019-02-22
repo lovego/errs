@@ -25,7 +25,7 @@ func Stack(skip int) string {
 func WithStack(err error) string {
 	if e, ok := err.(interface {
 		Stack() string
-	}); ok {
+	}); ok && e.Stack() != "" {
 		return err.Error() + "\n" + e.Stack()
 	}
 	return err.Error()
