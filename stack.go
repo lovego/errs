@@ -43,13 +43,11 @@ func setupPanicStackDepth() {
 	depth := 0
 	for {
 		if f, ok := frames.Next(); ok && strings.HasPrefix(f.Function, "runtime.") {
-			println(f.Function)
 			depth++
 		} else {
 			break
 		}
 	}
-	println(depth)
 	panicStackDepth = depth
 }
 

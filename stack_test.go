@@ -34,3 +34,9 @@ github.com/lovego/errs.ExampleWithStack
 	}
 	// Output: the error
 }
+
+func ExamplePanicStackDepth() {
+	println(PanicStackDepth())
+	fmt.Println(PanicStackDepth() > 0)
+	// Output: true
+}
