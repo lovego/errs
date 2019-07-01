@@ -4,7 +4,15 @@ import (
 	"bytes"
 	"fmt"
 	"runtime"
+	"strings"
 )
+
+var panicStackDepth int
+
+func init() {
+	defer setupPanicStackDepth()
+	panic(nil)
+}
 
 func Stack(skip int) string {
 	buf := new(bytes.Buffer)
@@ -20,6 +28,29 @@ func Stack(skip int) string {
 		}
 	}
 	return buf.String()
+}
+
+func PanicStackDepth() int {
+	return panicStackDepth
+}
+
+func setupPanicStackDepth() {
+	recover()
+	callers := make([]uintptr, 32)
+	n := runtime.Callers(2, callers)
+	frames := runtime.CallersFrames(callers[:n])
+
+	depth := 0
+	for {
+		if f, ok := frames.Next(); ok && strings.HasPrefix(f.Function, "runtime.") {
+			println(f.Function)
+			depth++
+		} else {
+			break
+		}
+	}
+	println(depth)
+	panicStackDepth = depth
 }
 
 func WithStack(err error) string {
