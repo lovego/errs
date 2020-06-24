@@ -16,6 +16,9 @@ func New(code, message string) *Error {
 }
 
 func Trace(err error) *Error {
+	if err == nil {
+		return nil
+	}
 	if e, ok := err.(*Error); ok {
 		if e.Stack() == "" {
 			e.stack = Stack(3)
