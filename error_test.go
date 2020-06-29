@@ -33,7 +33,7 @@ func ExampleNew() {
 }
 
 func ExampleTrace() {
-	err := Trace(errors.New(`connection timeout`))
+	err := Trace(errors.New(`connection timeout`)).(*Error)
 	fmt.Println("Error:", err.Error())
 	fmt.Println("Code:" + err.Code())
 	fmt.Println("Message:" + err.Message())
@@ -58,7 +58,7 @@ func ExampleTrace() {
 }
 
 func ExampleTrace_Error() {
-	err := Trace(New("code", "message"))
+	err := Trace(New("code", "message")).(*Error)
 	fmt.Println("Error:", err.Error())
 	fmt.Println("Stack:", strings.HasPrefix(err.Stack(), "github.com/lovego/errs.ExampleTrace_Error"))
 	fmt.Println("Data:", err.Data())

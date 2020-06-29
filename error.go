@@ -15,7 +15,7 @@ func New(code, message string) *Error {
 	return &Error{code: code, message: message}
 }
 
-func Trace(err error) *Error {
+func Trace(err error) error {
 	if err == nil {
 		return nil
 	}

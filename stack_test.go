@@ -36,7 +36,6 @@ github.com/lovego/errs.ExampleWithStack
 }
 
 func ExamplePanicStackDepth() {
-	println(PanicStackDepth())
 	fmt.Println(PanicStackDepth() > 0)
 	// Output: true
 }
