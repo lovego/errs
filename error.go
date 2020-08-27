@@ -15,6 +15,13 @@ func New(code, message string) *Error {
 	return &Error{code: code, message: message}
 }
 
+func Newf(code, message string, args ...interface{}) *Error {
+	if len(args) > 0 {
+		message = fmt.Sprintf(message, args)
+	}
+	return &Error{code: code, message: message}
+}
+
 func Trace(err error) error {
 	if err == nil {
 		return nil
