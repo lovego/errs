@@ -17,7 +17,7 @@ func New(code, message string) *Error {
 
 func Newf(code, message string, args ...interface{}) *Error {
 	if len(args) > 0 {
-		message = fmt.Sprintf(message, args)
+		message = fmt.Sprintf(message, args...)
 	}
 	return &Error{code: code, message: message}
 }
