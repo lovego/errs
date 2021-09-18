@@ -4,26 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"runtime"
-	"strings"
 )
 
-const normalStackDepth = 2
-
-var panicStackDepth int
-
-func init() {
-	defer setupPanicStackDepth()
-	panic(nil)
-}
-
-func GetStack(skip int) string {
-	s := Stack{Skip: skip + 1}
-	return s.String()
-}
+const skip = 2
 
 type Stack struct {
-	Skip    int
-	IsPanic bool
+	Skip int
 }
 
 func (s *Stack) IncrSkip() *Stack {
@@ -34,21 +20,24 @@ func (s *Stack) IncrSkip() *Stack {
 	return s
 }
 
-func (s *Stack) skip() int {
-	if s.IsPanic {
-		return s.Skip + panicStackDepth
-	}
-	return s.Skip + normalStackDepth
-}
-
 func (s *Stack) String() string {
 	if s == nil {
 		return ""
 	}
+	return CurrentStack(s.Skip + 1)
+}
+
+// CurrentStack return the current stack with the deepest n stack skipped.
+func CurrentStack(skip int) string {
+	return FullStack(skip + 3)
+}
+
+// FullStack return the full stack with the deepest n stack skipped.
+func FullStack(skip int) string {
 	buf := new(bytes.Buffer)
 
 	callers := make([]uintptr, 32)
-	n := runtime.Callers(s.skip(), callers)
+	n := runtime.Callers(skip, callers)
 	frames := runtime.CallersFrames(callers[:n])
 	for {
 		if f, ok := frames.Next(); ok {
@@ -58,27 +47,6 @@ func (s *Stack) String() string {
 		}
 	}
 	return buf.String()
-}
-
-func PanicStackDepth() int {
-	return panicStackDepth
-}
-
-func setupPanicStackDepth() {
-	recover()
-	callers := make([]uintptr, 32)
-	n := runtime.Callers(2, callers)
-	frames := runtime.CallersFrames(callers[:n])
-
-	depth := 0
-	for {
-		if f, ok := frames.Next(); ok && strings.HasPrefix(f.Function, "runtime.") {
-			depth++
-		} else {
-			break
-		}
-	}
-	panicStackDepth = depth
 }
 
 func WithStack(err error) string {

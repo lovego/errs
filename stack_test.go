@@ -6,15 +6,25 @@ import (
 	"regexp"
 )
 
-func ExampleStack() {
-	s := Stack{Skip: -2}
-	stack := s.String()
+func ExampleFullStack() {
+	stack := FullStack(0)
 	re := regexp.MustCompile(`^runtime\.Callers
 	/.+/src/runtime/extern\.go:(\d+) \(0x[a-f0-9]+\)
-github.com/lovego/errs.\(\*Stack\).String
+github.com/lovego/errs.FullStack
 	.*/stack\.go:(\d+) \(0x[a-f0-9]+\)
-github.com/lovego/errs.ExampleStack
-	/.+/errs/stack_test\.go:11 \(0x[a-f0-9]+\)
+github.com/lovego/errs.ExampleFullStack
+	/.+/errs/stack_test\.go:10 \(0x[a-f0-9]+\)
+`)
+	if !re.MatchString(stack) {
+		fmt.Println(stack)
+	}
+	// Output:
+}
+
+func ExampleCurrentStack() {
+	stack := CurrentStack(0)
+	re := regexp.MustCompile(`^github.com/lovego/errs.ExampleCurrentStack
+	/.+/errs/stack_test\.go:25 \(0x[a-f0-9]+\)
 `)
 	if !re.MatchString(stack) {
 		fmt.Println(stack)
@@ -28,15 +38,10 @@ func ExampleWithStack() {
 	stack := WithStack(Trace(err))
 	re := regexp.MustCompile(`the error
 github.com/lovego/errs.ExampleWithStack
-	/.+/errs/stack_test\.go:28 \(0x[a-z0-9]+\)
+	/.+/errs/stack_test\.go:38 \(0x[a-z0-9]+\)
 `)
 	if !re.MatchString(stack) {
 		fmt.Println(stack)
 	}
 	// Output: the error
-}
-
-func ExamplePanicStackDepth() {
-	fmt.Println(PanicStackDepth() > 0)
-	// Output: true
 }
