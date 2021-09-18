@@ -28,16 +28,16 @@ func Trace(err error) error {
 	}
 	if e, ok := err.(*Error); ok {
 		if e.Stack() == "" {
-			e.stack = Stack(3)
+			e.stack = Stack{Skip: 1}.String()
 		}
 		return e
 	} else {
-		return &Error{err: err, stack: Stack(3)}
+		return &Error{err: err, stack: Stack{Skip: 1}.String()}
 	}
 }
 
 func Tracef(format string, args ...interface{}) *Error {
-	return &Error{err: fmt.Errorf(format, args...), stack: Stack(3)}
+	return &Error{err: fmt.Errorf(format, args...), stack: Stack{Skip: 1}.String()}
 }
 
 func (err *Error) Error() string {
@@ -53,7 +53,7 @@ func (err *Error) Stack() string {
 }
 
 func (err *Error) Trace() *Error {
-	err.stack = Stack(3)
+	err.stack = Stack{Skip: 1}.String()
 	return err
 }
 

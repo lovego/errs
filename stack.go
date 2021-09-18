@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+const normalStackDepth = 2
+
 var panicStackDepth int
 
 func init() {
@@ -14,11 +16,28 @@ func init() {
 	panic(nil)
 }
 
-func Stack(skip int) string {
+type Stack struct {
+	Skip    int
+	IsPanic bool
+}
+
+func (s *Stack) IncrSkip() *Stack {
+	s.Skip++
+	return s
+}
+
+func (s *Stack) skip() int {
+	if s.IsPanic {
+		return s.Skip + panicStackDepth
+	}
+	return s.Skip + normalStackDepth
+}
+
+func (s Stack) String() string {
 	buf := new(bytes.Buffer)
 
 	callers := make([]uintptr, 32)
-	n := runtime.Callers(skip, callers)
+	n := runtime.Callers(s.skip(), callers)
 	frames := runtime.CallersFrames(callers[:n])
 	for {
 		if f, ok := frames.Next(); ok {

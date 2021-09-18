@@ -7,10 +7,10 @@ import (
 )
 
 func ExampleStack() {
-	stack := Stack(0)
+	stack := Stack{Skip: -2}.String()
 	re := regexp.MustCompile(`^runtime\.Callers
 	/.+/src/runtime/extern\.go:(\d+) \(0x[a-f0-9]+\)
-github.com/lovego/errs.Stack
+github.com/lovego/errs.Stack.String
 	.*/stack\.go:(\d+) \(0x[a-f0-9]+\)
 github.com/lovego/errs.ExampleStack
 	/.+/errs/stack_test\.go:10 \(0x[a-f0-9]+\)
