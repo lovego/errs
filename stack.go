@@ -16,12 +16,20 @@ func init() {
 	panic(nil)
 }
 
+func GetStack(skip int) string {
+	s := Stack{Skip: skip + 1}
+	return s.String()
+}
+
 type Stack struct {
 	Skip    int
 	IsPanic bool
 }
 
 func (s *Stack) IncrSkip() *Stack {
+	if s == nil {
+		return nil
+	}
 	s.Skip++
 	return s
 }
@@ -33,7 +41,10 @@ func (s *Stack) skip() int {
 	return s.Skip + normalStackDepth
 }
 
-func (s Stack) String() string {
+func (s *Stack) String() string {
+	if s == nil {
+		return ""
+	}
 	buf := new(bytes.Buffer)
 
 	callers := make([]uintptr, 32)

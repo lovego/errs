@@ -7,13 +7,14 @@ import (
 )
 
 func ExampleStack() {
-	stack := Stack{Skip: -2}.String()
+	s := Stack{Skip: -2}
+	stack := s.String()
 	re := regexp.MustCompile(`^runtime\.Callers
 	/.+/src/runtime/extern\.go:(\d+) \(0x[a-f0-9]+\)
-github.com/lovego/errs.Stack.String
+github.com/lovego/errs.\(\*Stack\).String
 	.*/stack\.go:(\d+) \(0x[a-f0-9]+\)
 github.com/lovego/errs.ExampleStack
-	/.+/errs/stack_test\.go:10 \(0x[a-f0-9]+\)
+	/.+/errs/stack_test\.go:11 \(0x[a-f0-9]+\)
 `)
 	if !re.MatchString(stack) {
 		fmt.Println(stack)
@@ -27,7 +28,7 @@ func ExampleWithStack() {
 	stack := WithStack(Trace(err))
 	re := regexp.MustCompile(`the error
 github.com/lovego/errs.ExampleWithStack
-	/.+/errs/stack_test\.go:27 \(0x[a-z0-9]+\)
+	/.+/errs/stack_test\.go:28 \(0x[a-z0-9]+\)
 `)
 	if !re.MatchString(stack) {
 		fmt.Println(stack)
