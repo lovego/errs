@@ -22,6 +22,17 @@ func Newf(code, message string, args ...interface{}) *Error {
 	return &Error{code: code, message: message}
 }
 
+// Wrap return an wrapped error.
+// Choose "error" return type instead of "*Error", to avoid "nil pointer" become a "non nil error".
+func Wrap(err error) error {
+	if err == nil {
+		return nil
+	}
+	return &Error{err: err}
+}
+
+// Trace return an traced error with stack.
+// Choose "error" return type instead of "*Error", to avoid "nil pointer" become a "non nil error".
 func Trace(err error) error {
 	if err == nil {
 		return nil
