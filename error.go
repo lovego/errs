@@ -6,8 +6,8 @@ import (
 
 type Error struct {
 	err           error // original error
-	stack         string
 	code, message string
+	stack         string
 	data          interface{}
 }
 
@@ -49,6 +49,15 @@ func Trace(err error) error {
 
 func Tracef(format string, args ...interface{}) *Error {
 	return &Error{err: fmt.Errorf(format, args...), stack: CurrentStack(1)}
+}
+
+// Verbose print err verbosely
+func Verbose(err error) string {
+	if e, ok := err.(*Error); ok {
+		return fmt.Sprintf("%s\n%s\n%v", e.Error(), e.Stack(), e.Data())
+	} else {
+		return err.Error()
+	}
 }
 
 func (err *Error) Error() string {
