@@ -1,7 +1,10 @@
 package errs
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
 )
 
 type Error struct {
@@ -29,6 +32,69 @@ func Wrap(err error) error {
 		return nil
 	}
 	return &Error{err: err}
+}
+func UnWrap(err error) (bool, error) {
+	if err == nil {
+		return false, err
+	}
+
+	e, ok := err.(*Error)
+	if ok {
+		if e.err == nil && e.message != "" {
+			return true, errors.New(UnErrorAll(e.message))
+		}
+		return true, e.err
+	}
+
+	var et Error
+	st := UnErrorAll(err.Error())
+	e2 := json.Unmarshal([]byte(st), &et)
+	if e2 == nil {
+		if et.message != "" {
+			return true, errors.New(et.message)
+		}
+		if et.err != nil {
+			return true, et.err
+		}
+		//return true, et.err
+	}
+
+	if st == "" {
+		return false, nil
+	}
+
+	return false, errors.New(st)
+}
+func UnWrapAll(err error) error {
+	for {
+		ok, e := UnWrap(err)
+		if !ok {
+			return e
+		}
+		err = e
+	}
+}
+
+func UnErrorAll(s string) string {
+	for {
+		t, ok := UnError(s)
+		if !ok {
+			return s
+		}
+		s = t
+	}
+}
+
+func UnError(s string) (string, bool) {
+	n := strings.Index(s, ": ")
+	if n < 0 {
+		return s, false
+	}
+	data := s[n:]
+	data = strings.TrimSpace(data)
+	data = strings.TrimPrefix(data, ":")
+	data = strings.TrimSpace(data)
+	return data, true
 }
 
 // Trace return an traced error with stack.
